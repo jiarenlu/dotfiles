@@ -5,112 +5,17 @@ VERBOSE=ON
 LOGFILE=$MAILDIR/log
 
 :0
-* ^To:.*@opensuse.org
-${MAILDIR}/opensuse/
+* ^Subject:.*电话录音数据
+${MAILDIR}/phone_data/
 
 :0
-* ^Cc:.*@opensuse.org
-${MAILDIR}/opensuse/
-
-
-:0
-* ^To:chinese@lists.fedoraproject.org
-${MAILDIR}/fedora/
+* ^From.*system@vcchina.com
+${MAILDIR}/oa/
 
 :0
-* ^From:noreply@emacs-china.org
-${MAILDIR}/emacs-china/
+* ^From.*git@fangde.com
+${MAILDIR}/gitlab/
 
-:0
-* ^From:.*apple.com
-${MAILDIR}/apple/
-
-
-:0
-* ^Subject:.*shadowsocks/shadowsocks.*
-${MAILDIR}/shadowsocks/
-
-
-:0
-* ^Subject:.*melpa/melpa.*
-${MAILDIR}/melpa/
-
-
-:0
-* ^Subject:.*521xueweihan/HelloGitHub.*
-${MAILDIR}/hellogithub/
-
-:0
-* ^Subject:.*bbatsov/projectile.*
-${MAILDIR}/projectile/
-
-:0
-* ^Subject:.*chai2010/advanced-go-programming-book.*
-${MAILDIR}/advanced-go-programming-book/
-
-:0
-* ^Subject:.*GoogleContainerTools/jib.*
-${MAILDIR}/jib/
-
-:0
-* ^Subject:.*sindresorhus/awesome.*
-${MAILDIR}/awesome/
-
-:0
-* ^Subject:.*texmacs/texmacs.*
-${MAILDIR}/texmacs/
-
-:0
-* ^Subject:.*go-nuts.*
-${MAILDIR}/go-nuts/
-
-
-:0
-* ^Subject:.*purcell/emacs.d.*
-${MAILDIR}/emacs.d/
-
-:0
-* ^Subject:.*bbatsov/prelude.*
-${MAILDIR}/prelude/
-
-:0
-* ^To:emacs-devel.*@gnu.org|^Cc:.*emacs-devel.*@gnu.org.*|^List:emacs-devel.gnu.org
-${MAILDIR}/emacs-devel/
-
-
-:0
-* ^Subject:.*FZUG/repo.*
-${MAILDIR}/fzug/
-
-:0
-* ^Subject:.*Emacs\sChina.*
-${MAILDIR}/emacs-china/
-
-:0
-* ^From:.*plus.google.com
-${MAILDIR}/google+/
-
-
-:0
-* ^From:notifications@github.com|noreply@github.com
-${MAILDIR}/github/
-
-
-:0
-* ^From:PlayStation
-${MAILDIR}/psn/
-
-:0
-* ^To:chenshuang_93@sina.com
-${MAILDIR}/sina/
-
-:0
-* ^To:chenshuang_93@163.com
-${MAILDIR}/163/
-
-:0
-* ^To:chen_akarin@139.com
-${MAILDIR}/139/
 
 :0
 * ^To:*@fangde.com
