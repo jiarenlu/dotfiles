@@ -81,8 +81,11 @@ do
       print("Personal theme doesn't exist, falling back to openSUSE")
       beautiful.init(awful.util.get_themes_dir() .. "openSUSE/theme.lua")
    end
-   beautiful.wallpaper = "/data/Pictures/22.jpg"
+   beautiful.font = "Source Code Pro 8"
+   beautiful.wallpaper = "/data/Pictures/vim-cheat-sheet.png"
 end
+
+-- awful.util.spawn("compton -c -C -t-4 -l-4 -r4 -o.75 -f -D7 -I.07 -O.07 -b")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt-256color"
@@ -102,6 +105,7 @@ internet_browser = "google-chrome"
 -- music_player = "mplayer"
 
 awful.util.spawn("xscreensaver -no-splash")
+
 
 
 
@@ -203,13 +207,30 @@ separator:set_text("|")
 mytextclock = wibox.widget.textclock()
 calendar2.addCalendarToWidget(mytextclock, "<span color='green'>%s</span>")
 
-mycpuwidget = wibox.widget.textbox()
+local mycpuwidget = wibox.widget.textbox()
 vicious.register(mycpuwidget, vicious.widgets.cpu, "$1%")
 
 local memwidget = wibox.widget.textbox()
 vicious.cache(vicious.widgets.mem)
 vicious.register(memwidget, vicious.widgets.mem, "mem: $1%", 2)
 
+
+-- disk I/O using iostat from sysstat utilities
+local iotable = {}
+local iostat = awful.widget.watch("iostat -dk", 2, -- in Kb, use -dm for Mb
+    function(widget, stdout)
+        for line in stdout:match("(sd.*)\n"):gmatch("(.-)\n") do
+            local device, tps, read_s, wrtn_s, read, wrtn =
+            line:match("(%w+)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)")
+            --                  [1]  [2]     [3]     [4]   [5]
+            iotable[device] = { tps, read_s, wrtn_s, read, wrtn }
+        end
+
+        -- customize here
+        widget:set_text("sda: "..iotable["sda"][2].."/"..iotable["sda"][3]) -- read_s/wrtn_s
+        widget:set_text("sdb: "..iotable["sdb"][2].."/"..iotable["sdb"][3]) -- read_s/wrtn_s
+    end
+)
 -- mybattery = wibox.widget.textbox()
 -- vicious.register(mybattery, function(format, warg)
 --     local args = vicious.widgets.bat(format, warg)
@@ -321,11 +342,7 @@ awful.screen.connect_for_each_screen(function(s)
       set_wallpaper(s)
 
       -- Each screen has its own tag table.
-      local names = { "1", "2",  "3", "4", "5","6", "7", "8", "9" }
-      local l = awful.layout.suit  -- Just to save some typing: use an alias.
-      local layouts = { l.tile, l.floating, l.max, l.max,l.floating,
-                        l.floating, l.tile.left, l.floating, l.floating }
-      awful.tag(names, s, layouts)
+      awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
       -- Create a promptbox for each screen
       s.mypromptbox = awful.widget.prompt()
@@ -361,6 +378,11 @@ awful.screen.connect_for_each_screen(function(s)
             mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
+            separator,
+            spacer,
+
+            iostat,
+            spacer,
             separator,
             spacer,
 
@@ -693,7 +715,8 @@ awful.rules.rules = {
                     keys = clientkeys,
                     buttons = clientbuttons,
                     screen = awful.screen.preferred,
-                    placement = awful.placement.no_overlap+awful.placement.no_offscreen
+                    placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+                    titlebars_enabled = false
      }
    },
 
@@ -715,7 +738,10 @@ awful.rules.rules = {
            "Wpa_gui",
            "pinentry",
            "veromix",
-           "xtightvncviewer"},
+           "xtightvncviewer",
+           "vivaldi",
+           "idea"
+        },
 
         name = {
            "Event Tester",  -- xev.
@@ -728,7 +754,7 @@ awful.rules.rules = {
 
    -- Add titlebars to normal clients and dialogs
    { rule_any = {type = { "normal", "dialog" }
-                }, properties = { titlebars_enabled = true }
+                }, properties = { titlebars_enabled = false }
    },
 
    -- Set Firefox to always map on the tag named "2" on screen 1.
@@ -813,7 +839,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 autorun = true
 autorunApps =
    {
-      -- "xrandr --output VGA1 --left-of HDMI1 --auto",
+      "xrandr --output VGA1 --left-of HDMI1 --auto",
       "~/.nutstore/dist/bin/nutstore-pydaemon.py",
       -- "synapse"
       -- "nm-applet --sm-disable & ",
@@ -825,5 +851,3 @@ if autorun then
       awful.util.spawn_with_shell(autorunApps[app])
    end
 end
-
-
