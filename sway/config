@@ -212,8 +212,6 @@ bar {
 include /etc/sway/config.d/*
 
 exec xrdb ~/.Xresources
-# start fcitx
-exec fcitx
 
 exec ~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox
 
