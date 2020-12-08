@@ -38,7 +38,6 @@ local gtk = lgi.require("Gtk", "3.0")
 -- Freedesktop integration
 local freedesktop = require("freedesktop")
 -- calendar functions
-local calendar2 = require("calendar2")
 -- Extra widgets
 local vicious = require("vicious")
 
@@ -82,7 +81,7 @@ do
       beautiful.init(awful.util.get_themes_dir() .. "openSUSE/theme.lua")
    end
    beautiful.font = "Source Code Pro 8"
-   beautiful.wallpaper = "/data/Pictures/vim-cheat-sheet.png"
+   -- beautiful.wallpaper = "/data/Pictures/vim-cheat-sheet.png"
 end
 
 -- awful.util.spawn("compton -c -C -t-4 -l-4 -r4 -o.75 -f -D7 -I.07 -O.07 -b")
@@ -104,13 +103,12 @@ internet_browser = "google-chrome"
 -- mixer = "pavucontrol"
 -- music_player = "mplayer"
 
-awful.util.spawn("xscreensaver -no-splash")
+-- awful.util.spawn("xscreensaver -no-splash")
 
 
 
 
 menubar.utils.terminal = terminal
-theme.icon_theme = "Adwaita"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -204,9 +202,6 @@ spacer:set_text(" ")
 separator:set_text("|")
 
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
-calendar2.addCalendarToWidget(mytextclock, "<span color='green'>%s</span>")
-
 local mycpuwidget = wibox.widget.textbox()
 vicious.register(mycpuwidget, vicious.widgets.cpu, "$1%")
 
@@ -218,18 +213,18 @@ vicious.register(memwidget, vicious.widgets.mem, "mem: $1%", 2)
 -- disk I/O using iostat from sysstat utilities
 local iotable = {}
 local iostat = awful.widget.watch("iostat -dk", 2, -- in Kb, use -dm for Mb
-    function(widget, stdout)
-        for line in stdout:match("(sd.*)\n"):gmatch("(.-)\n") do
-            local device, tps, read_s, wrtn_s, read, wrtn =
-            line:match("(%w+)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)")
-            --                  [1]  [2]     [3]     [4]   [5]
-            iotable[device] = { tps, read_s, wrtn_s, read, wrtn }
-        end
+                                  function(widget, stdout)
+                                     for line in stdout:match("(sd.*)\n"):gmatch("(.-)\n") do
+                                        local device, tps, read_s, wrtn_s, read, wrtn =
+                                           line:match("(%w+)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)%s*(%d+,?%d*)")
+                                        --                  [1]  [2]     [3]     [4]   [5]
+                                        iotable[device] = { tps, read_s, wrtn_s, read, wrtn }
+                                     end
 
-        -- customize here
-        widget:set_text("sda: "..iotable["sda"][2].."/"..iotable["sda"][3]) -- read_s/wrtn_s
-        widget:set_text("sdb: "..iotable["sdb"][2].."/"..iotable["sdb"][3]) -- read_s/wrtn_s
-    end
+                                     -- customize here
+                                     widget:set_text("sda: "..iotable["sda"][2].."/"..iotable["sda"][3]) -- read_s/wrtn_s
+                                     widget:set_text("sdb: "..iotable["sdb"][2].."/"..iotable["sdb"][3]) -- read_s/wrtn_s
+                                  end
 )
 -- mybattery = wibox.widget.textbox()
 -- vicious.register(mybattery, function(format, warg)
@@ -548,7 +543,7 @@ globalkeys = awful.util.table.join(
                return matches[ncomp], #matches[ncomp] + 1
             end,
             awful.util.getdir("cache") .. "ssh_history")
-                                            end,
+   end,
       {description = "ssh login", group = "awesome"}),
 
    awful.key({ modkey }, "x",
@@ -772,7 +767,7 @@ client.connect_signal("manage", function (c)
 
                          if awesome.startup and
                             not c.size_hints.user_position
-                         and not c.size_hints.program_position then
+                            and not c.size_hints.program_position then
                             -- Prevent clients from being unreachable after screen count changes.
                             awful.placement.no_offscreen(c)
                          end
@@ -823,7 +818,7 @@ end)
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
                          if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-                         and awful.client.focus.filter(c) then
+                            and awful.client.focus.filter(c) then
                             client.focus = c
                          end
 end)
